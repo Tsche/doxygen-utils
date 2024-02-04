@@ -4,8 +4,6 @@
  */
 
 class DoxygenAwesomeAlerts {
-  static successDuration = 980;
-
   static alerts = {
     '[!NOTE]': {
       'text': 'Note',
@@ -40,7 +38,8 @@ class DoxygenAwesomeAlerts {
   }
 
   static get_alert(config) {
-    let alert = document.createElement('p');
+    let alert = document.createElement('h3');
+    alert.className = 'markdown-alert-title';
 
     let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', config['class'])
@@ -53,8 +52,11 @@ class DoxygenAwesomeAlerts {
     path.setAttribute('d', config['path'])
     svg.appendChild(path);
 
+    let title = document.createElement('span');
+    title.innerHTML = config['text'];
+
     alert.appendChild(svg);
-    alert.innerHTML += config['text'];
+    alert.append(title);
 
     return alert;
   }
@@ -86,13 +88,22 @@ class DoxygenAwesomeAlerts {
           // could not find tag, bail out
           continue;
         }
-        const alert = DoxygenAwesomeAlerts.get_alert(info);
-        // blockquote.insertBefore(DoxygenAwesomeAlerts.get_alert(info), first_paragraph);
-
         // remove tag from text
-        text                      = text.slice(tag.length);
-        first_paragraph.innerHTML = text;
+        first_paragraph.innerHTML = text.slice(tag.length);
+        const first_element = first_paragraph.firstElementChild
+        if (first_element && first_element.tagName == 'BR') {
+          console.log(first_element.tagName)
+          // sometimes a line break is inserted at the start of this node
+          // not sure why
+          first_element.remove();
+        }
+
+        // add alert line
+        const alert = DoxygenAwesomeAlerts.get_alert(info);
         first_paragraph.prepend(alert);
+
+        blockquote.classList.add('markdown-alert');
+        blockquote.classList.add(info['class']);
       }
     })
   }

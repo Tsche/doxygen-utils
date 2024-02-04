@@ -1360,7 +1360,7 @@ HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  = docs/style/doxygen-awesome.css \
                          docs/style/doxygen-awesome-sidebar-only.css \
                          docs/style/doxygen-awesome-sidebar-only-darkmode-toggle.css \
-                         github-corner.css \
+                         docs/github-corner.css \
                          doxygen-awesome-godbolt.css \
                          doxygen-awesome-alerts.css
 
