@@ -1,6 +1,6 @@
 # doxygen-utils
 
-This repository contains various useful helpers for doxygen.
+This repository contains various useful helpers for doxygen. Please refer to the [documentation](https://tsche.github.io/doxygen-utils/) for examples and usage.
 
 Currently there is various extensions for doxygen-awesome:
 - [doxygen-awesome-alerts](docs/alerts.md) to support GitHub's alert markers (ie. [!WARNING])
@@ -9,6 +9,7 @@ Currently there is various extensions for doxygen-awesome:
 
 There is also a hook to clean up dot output.
 - [patch_dot](docs/dependency.md)
+
 
 ## License
 
