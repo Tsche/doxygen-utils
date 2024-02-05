@@ -14,9 +14,8 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M 12 0 C 5.373 0 0 5.373 0 12 s 5.373 12 12 12 s 12 -5.373 12 -12 S 18.627 0 12 0 z M 7.5 18 V 6 l 12.006 6 L 7.5 18 z" style="fill:#32a852;"/></svg>`;
   static successIcon =
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>`;
-  static successDuration        = 980;
-  static defaultCompiler        = 'gsnapshot';
-  static defaultCompilerOptions = '-std=c++20 -O3';
+  static successDuration = 980;
+  static defaultSettings = {'language': 'c++', 'settings': { 'id': 'gsnapshot', 'options': '-std=c++20 -O3' }};
 
   static init() {
     $(() => {
@@ -59,14 +58,17 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
     const content   = this.previousSibling.cloneNode(true);
     let textContent = DoxygenAwesomeGodbolt.getContent(content);
 
+    const language = this.compiler['language']
+    const settings = {'id': this.compiler['id'], 'options': this.compiler['options']}
+
     // TODO fix includes
     const clientstate = {
       'sessions': [{
         'id': 1,
-        'language': 'c++', // TODO language
+        'language': this.compiler.language,
         'source': textContent.trim() + '\n',
-        'compilers': [this.compiler],
-        'executors': [{'compiler': this.compiler}]
+        'compilers': [this.compiler.settings],
+        'executors': [{'compiler': this.compiler.settings}]
       }]
     };
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(clientstate))));
@@ -92,18 +94,29 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
 
     magic_line = magic_line.substr(3).trim();
     if (!magic_line) {
-      return {'id': DoxygenAwesomeGodbolt.defaultCompiler, 'options': DoxygenAwesomeGodbolt.defaultCompilerOptions};
-    } else if (magic_line.startsWith('-')) {
+      return DoxygenAwesomeGodbolt.defaultSettings;
+    }
+    let cursor = magic_line.indexOf(' ');
+    if (cursor == -1) {
+      // no space found => only language, no other settings
+      return {'language': magic_line, 'settings': DoxygenAwesomeGodbolt.defaultSettings.settings};
+    }
+
+    const language = magic_line.substr(cursor);
+    magic_line = magic_line.substr(language.length) + 1;    
+    let settings = {...DoxygenAwesomeGodbolt.defaultSettings.settings};
+    if (magic_line.startsWith('-')) {
       // no compiler set, but got options
-      return {'id': DoxygenAwesomeGodbolt.defaultCompiler, 'options': magic_line};
+      settings.options = magic_line;
     } else if (!magic_line.includes('-')) {
       // no options, but got compiler
-      return {'id': magic_line, 'options': DoxygenAwesomeGodbolt.defaultCompilerOptions};
+      settings.id      = magic_line
     } else {
-      const [head]              = magic_line.split('-', 1);
-      const [compiler, options] = [head, magic_line.substr(head.length + 1)];
-      return {'id': compiler.trim(), 'options': '-' + options};
+      const [head]     = magic_line.split('-', 1);
+      settings.id      = head.trim();
+      settings.options = '-' + magic_line.substr(head.length + 1);
     }
+    return {'language': language, 'settings': settings};
   }
 }
 
