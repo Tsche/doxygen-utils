@@ -1,0 +1,48 @@
+{
+    "labels": ["0", "1", "2", "3", "4", "5", "6", "7", "8" ],
+    "datasets": [
+        {
+            "name": "recursive",
+            "values": [1356, 1356, 824, 4752, 3722, 2834, 770, 750, 722
+            ],
+            "chartType": "line"
+        },
+        {
+            "name": "chunked",
+            "values": [ 1335, 709, 2710, 4709, 1335, 2759, 729, 809, 759
+            ],
+            "chartType": "line"
+        },
+        {
+            "name": "chunked_pack",
+            "values": [
+                1366, 724, 745, 712, 1366, 703, 706, 712, 700
+            ],
+            "chartType": "line"
+        },
+        {
+            "name": "magic_enum",
+            "values": [ 10069, 10069, 4639, 6639, 5639, 4434, 4459, 4679, 4739
+            ],
+            "chartType": "line"
+        }
+    ],
+    "yMarkers": [
+        {
+            "label": "recursive",
+            "value": 722
+        },
+        {
+            "label": "chunked",
+            "value": 709
+        },
+        {
+            "label": "chunked_pack",
+            "value": 700
+        },
+        {
+            "label": "magic_enum",
+            "value": 4459
+        }
+    ]
+}
