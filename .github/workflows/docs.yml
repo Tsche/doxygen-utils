@@ -1,0 +1,72 @@
+name: Build documentation
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    container: alpine:latest
+    steps:
+      - name: Install dependencies
+        run: |
+          apk update
+          apk add --no-cache git doxygen graphviz font-liberation python3 py3-pydot
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Checkout correct version of style
+        working-directory: docs/style
+        run: git checkout v2.3.1
+
+      - name: Generate docs
+        run: |
+          mkdir -p build
+          doxygen docs/Doxyfile
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: docs-web
+          path: build/html
+
+  deploy-pages:
+    needs: build-docs
+  
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: docs-web
+          path: html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: html
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
