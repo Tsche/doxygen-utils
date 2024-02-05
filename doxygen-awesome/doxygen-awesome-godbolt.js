@@ -17,12 +17,16 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
   static successDuration = 980;
   static defaultSettings = {'language': 'c++', 'settings': { 'id': 'gsnapshot', 'options': '-std=c++20 -O3' }};
 
-  static init() {
+  static startsWithAny(str, substrs) {
+    return substrs.some(substr => str.startsWith(substr));
+  }
+
+  static init({magic=['//*', '#*'], replacements = {"#include <repr>": "foo"}} = {}) {
     $(() => {
       const fragments = document.getElementsByClassName('fragment');
       for (const fragment of fragments) {
         let magic_line = DoxygenAwesomeGodbolt.getContent(fragment).trimStart();
-        if (magic_line.startsWith('//*')) {
+        if (DoxygenAwesomeGodbolt.startsWithAny(magic_line, magic)) {
           // extract only first line
           magic_line = magic_line.split('\n', 1)[0];
         } else {
@@ -34,18 +38,24 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
           // trim whitespace and magic line
           const text = child.innerHTML;
           const node = child.firstChild;
-          if (text.trim() != '' && !(node.className == 'comment' && node.innerHTML.startsWith('//*'))) {
+          if (text.trim() == ''){
+            child.remove();
+          } else if (node.className == 'comment' && DoxygenAwesomeGodbolt.startsWithAny(node.innerHTML, magic)) {
+            child.remove();
+          }
+          else {
             break;
           }
-          child.remove();
         }
 
-        const fragmentWrapper     = document.createElement('div');
-        fragmentWrapper.className = 'doxygen-awesome-fragment-wrapper';
-        const godboltButton       = document.createElement('doxygen-awesome-godbolt');
-        godboltButton.innerHTML   = DoxygenAwesomeGodbolt.runIcon;
-        godboltButton.title       = DoxygenAwesomeGodbolt.title;
-        godboltButton.compiler    = DoxygenAwesomeGodbolt.parseCompilerSettings(magic_line);
+        const fragmentWrapper      = document.createElement('div');
+        fragmentWrapper.className  = 'doxygen-awesome-fragment-wrapper';
+        const godboltButton        = document.createElement('doxygen-awesome-godbolt');
+        godboltButton.innerHTML    = DoxygenAwesomeGodbolt.runIcon;
+        godboltButton.title        = DoxygenAwesomeGodbolt.title;
+        godboltButton.compiler     = DoxygenAwesomeGodbolt.parseCompilerSettings(magic_line);
+        godboltButton.magic        = magic;
+        godboltButton.replacements = replacements;
 
         fragment.parentNode.replaceChild(fragmentWrapper, fragment);
         fragmentWrapper.appendChild(fragment);
@@ -55,11 +65,13 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
   }
 
   runContent() {
+    console.log(this.replacements)
     const content   = this.previousSibling.cloneNode(true);
     let textContent = DoxygenAwesomeGodbolt.getContent(content);
-
-    const language = this.compiler['language']
-    const settings = {'id': this.compiler['id'], 'options': this.compiler['options']}
+    for (const entry in this.replacements) {
+      // replace includes with compiler explorer friendly alternatives
+      textContent.replace(entry, this.replacements[entry]);
+    }
 
     // TODO fix includes
     const clientstate = {
@@ -71,6 +83,8 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
         'executors': [{'compiler': this.compiler.settings}]
       }]
     };
+    console.log(clientstate)
+
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(clientstate))));
     window.open(`https://godbolt.org/clientstate/${encoded}`, '_blank').focus();
 
@@ -88,10 +102,6 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
   }
 
   static parseCompilerSettings(magic_line) {
-    if (!magic_line.startsWith('//*')) {
-      return {};
-    }
-
     magic_line = magic_line.substr(3).trim();
     if (!magic_line) {
       return DoxygenAwesomeGodbolt.defaultSettings;
@@ -99,22 +109,23 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
     let cursor = magic_line.indexOf(' ');
     if (cursor == -1) {
       // no space found => only language, no other settings
-      return {'language': magic_line, 'settings': DoxygenAwesomeGodbolt.defaultSettings.settings};
+      return {'language': magic_line, 'settings': (magic_line == 'c++') ? DoxygenAwesomeGodbolt.defaultSettings.settings : {}};
     }
 
-    const language = magic_line.substr(cursor);
+    const language = magic_line.substr(cursor + 1).trimStart();
     magic_line = magic_line.substr(language.length) + 1;    
-    let settings = {...DoxygenAwesomeGodbolt.defaultSettings.settings};
-    if (magic_line.startsWith('-')) {
+    let settings = language == 'c++' ? {...DoxygenAwesomeGodbolt.defaultSettings.settings} : {id: '', options: ''};
+
+    if (magic_line.startsWith('-') || magic_line.startsWith('/')) {
       // no compiler set, but got options
       settings.options = magic_line;
-    } else if (!magic_line.includes('-')) {
+    } else if (!magic_line.includes(' ')) {
       // no options, but got compiler
       settings.id      = magic_line
     } else {
-      const [head]     = magic_line.split('-', 1);
+      const [head]     = magic_line.split(' ', 1);
       settings.id      = head.trim();
-      settings.options = '-' + magic_line.substr(head.length + 1);
+      settings.options = magic_line.substr(head.length).trimStart();
     }
     return {'language': language, 'settings': settings};
   }
