@@ -17,7 +17,7 @@ class DoxygenAwesomeCharts {
   static init() {
     $(() => {
       const images = document.getElementsByTagName("img");
-      for (const image of images) {
+      for (const image of Array.from(images)) {
         if(!image.alt.startsWith(DoxygenAwesomeCharts.marker)){
           continue;
         }
@@ -31,7 +31,7 @@ class DoxygenAwesomeCharts {
       }
 
       const fragments = document.getElementsByClassName('fragment');
-      for (const fragment of Array.from(fragments)) {
+      for (const fragment of fragments) {
         fragment.querySelectorAll('.lineno, .ttc').forEach((node) => {node.remove()});
         let {textContent} = fragment;
         textContent = textContent.trim();
