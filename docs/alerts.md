@@ -8,7 +8,6 @@ The `doxygen-awesome-alerts` extension provides support for GitHub's alert synta
 
 ## Installation
 * Ensure you have doxygen-awesome properly configured for this project
-* Add `doxygen-awesome/doxygen-awesome-alerts.css` to `HTML_EXTRA_STYLESHEET` in your Doxyfile
 * Add `doxygen-awesome/doxygen-awesome-alerts.js` to `HTML_EXTRA_FILES` in your Doxyfile
 
 > [!TIP]
