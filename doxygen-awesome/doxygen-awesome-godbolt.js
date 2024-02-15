@@ -65,15 +65,14 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
   }
 
   runContent() {
-    console.log(this.replacements)
     const content   = this.previousSibling.cloneNode(true);
     let textContent = DoxygenAwesomeGodbolt.getContent(content);
+
     for (const entry in this.replacements) {
       // replace includes with compiler explorer friendly alternatives
-      textContent.replace(entry, this.replacements[entry]);
+      textContent = textContent.replace(entry, this.replacements[entry]);
     }
 
-    // TODO fix includes
     const clientstate = {
       'sessions': [{
         'id': 1,
@@ -83,7 +82,6 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
         'executors': [{'compiler': this.compiler.settings}]
       }]
     };
-    console.log(clientstate)
 
     const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(clientstate))));
     window.open(`https://godbolt.org/clientstate/${encoded}`, '_blank').focus();
@@ -112,10 +110,9 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
       return {'language': magic_line, 'settings': (magic_line == 'c++') ? DoxygenAwesomeGodbolt.defaultSettings.settings : {}};
     }
 
-    const language = magic_line.substr(cursor + 1).trimStart();
-    magic_line = magic_line.substr(language.length) + 1;    
+    const language = magic_line.substr(0, cursor).trim();
+    magic_line = magic_line.substr(language.length).trim();
     let settings = language == 'c++' ? {...DoxygenAwesomeGodbolt.defaultSettings.settings} : {id: '', options: ''};
-
     if (magic_line.startsWith('-') || magic_line.startsWith('/')) {
       // no compiler set, but got options
       settings.options = magic_line;
