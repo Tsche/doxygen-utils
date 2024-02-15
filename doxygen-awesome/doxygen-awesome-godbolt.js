@@ -68,9 +68,9 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
     const content   = this.previousSibling.cloneNode(true);
     let textContent = DoxygenAwesomeGodbolt.getContent(content);
 
-    for (const entry in this.replacements) {
+    for (const [before, after] of Object.entries(replacements)) {
       // replace includes with compiler explorer friendly alternatives
-      textContent = textContent.replace(entry, this.replacements[entry]);
+      textContent = textContent.replace(before, after);
     }
 
     const clientstate = {
@@ -124,7 +124,7 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
       settings.id      = head.trim();
       settings.options = magic_line.substr(head.length).trimStart();
     }
-    return {'language': language, 'settings': settings};
+    return {language, settings};
   }
 }
 
