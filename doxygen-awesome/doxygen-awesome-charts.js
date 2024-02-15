@@ -31,7 +31,7 @@ class DoxygenAwesomeCharts {
       }
 
       const fragments = document.getElementsByClassName('fragment');
-      for (const fragment of fragments) {
+      for (const fragment of Array.from(fragments)) {
         fragment.querySelectorAll('.lineno, .ttc').forEach((node) => {node.remove()});
         let {textContent} = fragment;
         textContent = textContent.trim();
