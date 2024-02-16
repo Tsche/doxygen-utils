@@ -1,0 +1,23 @@
+.dt-input {
+  background-color: var(--page-background-color) !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button.disabled.first, 
+div.dt-container .dt-paging .dt-paging-button.disabled.first:hover, 
+div.dt-container .dt-paging .dt-paging-button.disabled.first:active,
+div.dt-container .dt-paging .dt-paging-button.disabled.previous, 
+div.dt-container .dt-paging .dt-paging-button.disabled.previous:hover, 
+div.dt-container .dt-paging .dt-paging-button.disabled.previous:active,
+div.dt-container .dt-paging .dt-paging-button.disabled.next, 
+div.dt-container .dt-paging .dt-paging-button.disabled.next:hover, 
+div.dt-container .dt-paging .dt-paging-button.disabled.next:active,
+div.dt-container .dt-paging .dt-paging-button.disabled.last, 
+div.dt-container .dt-paging .dt-paging-button.disabled.last:hover, 
+div.dt-container .dt-paging .dt-paging-button.disabled.last:active
+{
+  color: var(--page-secondary-foreground-color) !important;
+}
+
+table.dataTable>tbody>tr {
+  background-color: var(--page-background-color) !important;
+}

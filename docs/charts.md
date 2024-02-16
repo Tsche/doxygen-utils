@@ -8,7 +8,6 @@ The `doxygen-awesome-charts` extension allows embedding of frappe charts with cu
 
 ## Installation
 * Ensure you have doxygen-awesome properly configured for this project
-* Add `doxygen-awesome/doxygen-awesome-charts.css` to `HTML_EXTRA_STYLESHEET` in your Doxyfile
 * Add `doxygen-awesome/doxygen-awesome-charts.js` to `HTML_EXTRA_FILES` in your Doxyfile
 
 > [!TIP]
@@ -62,7 +61,7 @@ frappe-chart foo
         "#d9f2e5",
         "#6e72f4"
     ],
-    "data": "test_data.json",
+    "data": "test_chart_data.json",
     "type": "line",
     "height": 400,
     "lineOptions": {
@@ -82,7 +81,7 @@ frappe-chart foo
         "#d9f2e5",
         "#6e72f4"
     ],
-    "data": "test_data.json",
+    "data": "test_chart_data.json",
     "type": "line",
     "height": 400,
     "lineOptions": {

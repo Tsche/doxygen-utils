@@ -1315,7 +1315,8 @@ HTML_EXTRA_STYLESHEET  = docs/style/doxygen-awesome.css \
                          docs/style/doxygen-awesome-sidebar-only.css \
                          docs/style/doxygen-awesome-sidebar-only-darkmode-toggle.css \
                          docs/github-corner.css \
-                         doxygen-awesome/doxygen-awesome-godbolt.css
+                         doxygen-awesome/doxygen-awesome-godbolt.css\
+                         doxygen-awesome/doxygen-awesome-tables.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
@@ -1332,9 +1333,12 @@ HTML_EXTRA_FILES       = LICENSE \
                          docs/style/doxygen-awesome-interactive-toc.js \
                          doxygen-awesome/doxygen-awesome-alerts.js \
                          doxygen-awesome/doxygen-awesome-charts.js \
+                         doxygen-awesome/doxygen-awesome-tables.js \
                          doxygen-awesome/doxygen-awesome-godbolt.js \
-                         docs/test_data.json \
-                         docs/test_chart.json
+                         docs/test_chart_data.json \
+                         docs/test_chart.json \
+                         docs/test_table.json \
+                         docs/test_table_data.json
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme.
@@ -1347,7 +1351,7 @@ HTML_EXTRA_FILES       = LICENSE \
 # The default value is: AUTO_LIGHT.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_COLORSTYLE        = AUTO_LIGHT
+HTML_COLORSTYLE        = LIGHT
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
