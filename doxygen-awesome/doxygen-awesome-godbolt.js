@@ -68,7 +68,7 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
     const content   = this.previousSibling.cloneNode(true);
     let textContent = DoxygenAwesomeGodbolt.getContent(content);
 
-    for (const [before, after] of Object.entries(replacements)) {
+    for (const [before, after] of Object.entries(this.replacements)) {
       // replace includes with compiler explorer friendly alternatives
       textContent = textContent.replace(before, after);
     }
@@ -100,7 +100,9 @@ class DoxygenAwesomeGodbolt extends HTMLElement {
   }
 
   static parseCompilerSettings(magic_line) {
+    //TODO replace whichever magic token was used rather than assuming it's 3 characters long
     magic_line = magic_line.substr(3).trim();
+
     if (!magic_line) {
       return DoxygenAwesomeGodbolt.defaultSettings;
     }
