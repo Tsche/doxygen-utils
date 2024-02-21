@@ -56,7 +56,7 @@ class DoxygenAwesomeTables {
   static linkChart(chart, table, key) {
     waitForElement(`#${chart}`).then((element) => {
       element.addEventListener('data-select', (event) => {
-        DoxygenAwesomeTables.jumpTo(`#${table}`, (idx, data, node) => {
+        DoxygenAwesomeTables.jumpTo(table, (idx, data, node) => {
           return data[key] == event.label;
         });
       });
