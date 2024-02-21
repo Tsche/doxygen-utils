@@ -23,6 +23,7 @@ class DoxygenAwesomeTables {
 
   static replaceElement(element, name) {
     let chart_container = document.createElement('table');
+    chart_container.setAttribute("style", "width: 100%;");
     chart_container.id = name;
     element.replaceWith(chart_container);
   }
