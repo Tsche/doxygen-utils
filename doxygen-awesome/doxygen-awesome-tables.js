@@ -33,8 +33,8 @@ class DoxygenAwesomeTables {
    * @param {function} detail_fnc
    */
   static detailHandler(table, detail_fnc) {
-    waitForElement(`#${table} tbody`).then((_) => {
-      $(`#${table} tbody`).on('click', 'td.dt-control', function() {
+    waitForElement(`#${table} tbody`).then((element) => {
+      $(element).on('click', 'td.dt-control', function() {
         const tr = $(this).closest('tr');
         const row = $(`#${table}`).DataTable().row(tr);
   
@@ -48,7 +48,19 @@ class DoxygenAwesomeTables {
   }
 
   static jumpTo(table, search_fnc) {
-    $(`#${table}`).DataTable().row(search_fnc).select().show().draw(false);
+    const datatable = $(`#${table}`).DataTable();
+    datatable.rows().deselect();
+    datatable.row(search_fnc).select().show().draw(false);
+  }
+
+  static linkChart(chart, table, key) {
+    waitForElement(`#${chart}`).then((element) => {
+      element.addEventListener('data-select', (event) => {
+        DoxygenAwesomeTables.jumpTo(`#${table}`, (idx, data, node) => {
+          return data[key] == event.label;
+        });
+      });
+    });
   }
 
   static init() {
